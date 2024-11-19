@@ -19,79 +19,90 @@ namespace CoinsBack.Api.Controllers
 
         // Obtener todos los usuarios
         [HttpGet("usuarios")]
-        public async Task<ActionResult<IEnumerable<PaisDTO>>> GetAll()
+        public async Task<ActionResult<IEnumerable<UserDto>>> GetAllUsuarios()
         {
-            //var paises = await _paisService.GetAllCountryAsync();
-            //return Ok(paises);
+            var usuarios = await _userService.GetAllUserAsync();
+            return Ok(usuarios);
         }
 
         // Obtener un país por ID
         [HttpGet("usuario/{id}")]
-        public async Task<ActionResult<PaisEntity>> GetById(int id)
+        public async Task<ActionResult<PaisEntity>> GetByIdUsuario(int id)
         {
-            //var pais = await _paisService.GetCountryByIdAsync(id);
-            //if (pais == null)
-            //    return NotFound($"No se encontró el país con ID: {id}");
+            var usuario = await _userService.getUserbyidasync(id);
+            if (usuario == null)
+                return NotFound($"No se encontró el usuario con ID: {id}");
 
-            //return Ok(pais);
+            return Ok(usuario);
         }
 
-        // Crear una nueva entidad (país)
+        // Crear una nueva entidad (usuario)
         [HttpPost("usuario")]
-        public async Task<ActionResult<PaisEntity>> Create([FromBody] CreatePaisDTO nuevaEntidad)
+        public async Task<ActionResult<UserEntity>> CreateUsuario([FromBody] CreateUserDTO nuevaEntidad)
         {
-            //if (!ModelState.IsValid)
-            //    return BadRequest(ModelState);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-            //var creado = await _paisService.CreateCountryAsync(nuevaEntidad.CodigoPais, nuevaEntidad.NombrePais);
-            //if (creado != null) // Comprobamos si la creación fue exitosa
-            //{
-            //    // Si el país se creó exitosamente, retornamos un 201 Created con el objeto PaisEntity
-            //    return CreatedAtAction(
-            //        nameof(GetById),  // Método que obtiene un país por su ID
-            //        new { id = creado.Id },  // Parámetro de la URL
-            //        creado  // Retornamos el objeto creado
-            //    );
-            //}
+            var creado = await _userService.createUserasync(
+                nuevaEntidad.NombreUsuario,
+                nuevaEntidad.TelefonoUsuario,
+                nuevaEntidad.DireccionDetalle,
+                nuevaEntidad.PaisId,
+                nuevaEntidad.DepartamentoId,
+                nuevaEntidad.MunicipioId);
+            if (creado != null)
+            {
+                return CreatedAtAction(
+                    nameof(GetByIdUsuario),
+                    new { id = creado.Id },
+                    creado
+                );
+            }
 
-            //return BadRequest("No se pudo crear el país.");
+            return BadRequest("No se pudo crear el usario.");
         }
 
         // Actualizar una entidad (país)
         [HttpPut("usuario/{id}")]
-        public async Task<ActionResult> Update(int id, [FromBody] PaisDTO entidadActualizada)
+        public async Task<ActionResult> UpdateUsuario(int id, [FromBody] CreateUserDTO entidadActualizada)
         {
-            //if (id != entidadActualizada.Id)
-            //    return BadRequest("El ID de la entidad no coincide.");
+            if (id != entidadActualizada.Id)
+                return BadRequest("El ID de la entidad no coincide.");
 
-            //var paisExistente = await _paisService.GetCountryByIdAsync(id);
-            //if (paisExistente == null)
-            //    return NotFound($"No se encontró el país con ID: {id}");
+            var usuarioExistente = await _userService.getUserbyidasync(id);
+            if (usuarioExistente == null)
+                return NotFound($"No se encontró el país con ID: {id}");
 
-            //var actualizado = await _paisService.UpdateCountryAsync(id, entidadActualizada.CodigoPais, entidadActualizada.NombrePais);
-            //if (actualizado)
-            //{
-            //    return NoContent(); // 204 No Content, indicando que la actualización fue exitosa
-            //}
+            var actualizado = await _userService.updateUsuarioasync(id,
+                entidadActualizada.NombreUsuario,
+                entidadActualizada.TelefonoUsuario,
+                entidadActualizada.DireccionDetalle,
+                entidadActualizada.PaisId,
+                entidadActualizada.DepartamentoId,
+                entidadActualizada.MunicipioId);
+            if (actualizado)
+            {
+                return NoContent(); // 204 No Content, indicando que la actualización fue exitosa
+            }
 
-            //return BadRequest("No se pudo actualizar el país.");
+            return BadRequest("No se pudo actualizar el usuario.");
         }
 
-        // Eliminar un país
+        // Eliminar un usuario
         [HttpDelete("usuario/{id}")]
-        public async Task<ActionResult> Delete(int id)
+        public async Task<ActionResult> DeleteUusario(int id)
         {
-            //var paisExistente = await _paisService.GetCountryByIdAsync(id);
-            //if (paisExistente == null)
-            //    return NotFound($"No se encontró el país con ID: {id}");
+            var usuarioExistente = await _userService.getUserbyidasync(id);
+            if (usuarioExistente == null)
+                return NotFound($"No se encontró el usuario con ID: {id}");
 
-            //var eliminado = await _paisService.DeleteCountryAsync(id);
-            //if (eliminado)
-            //{
-            //    return NoContent(); // 204 No Content, indicando que la eliminación fue exitosa
-            //}
+            var eliminado = await _userService.deleteUsuarioasync(id);
+            if (eliminado)
+            {
+                return NoContent(); // 204 No Content, indicando que la eliminación fue exitosa
+            }
 
-            //return BadRequest("No se pudo eliminar el país.");
+            return BadRequest("No se pudo eliminar el país.");
         }
     }
 }

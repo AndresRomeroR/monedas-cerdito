@@ -420,4 +420,191 @@ CREATE TABLE municipios (
     END;
     $$ LANGUAGE plpgsql;
     ```
+Usuarios
 
+```sql
+CREATE TABLE usuarios (
+    id SERIAL PRIMARY KEY,
+    nombre_usuario VARCHAR(255) NOT NULL,
+    telefono_usuario VARCHAR(20) NOT NULL,
+    direccion_detalle VARCHAR(255) NOT NULL,
+    pais_id INT NOT NULL,
+    departamento_id CHAR(2) NOT NULL,
+    municipio_id INT NOT NULL, 
+    status_usuario BOOL NOT NULL DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+
+    -- Relaciones (Foreign Keys)
+    CONSTRAINT fk_pais FOREIGN KEY (pais_id)
+        REFERENCES paises (id) ON DELETE RESTRICT,
+    CONSTRAINT fk_departamento FOREIGN KEY (departamento_id)
+        REFERENCES departamentos (codigo_departamento) ON DELETE RESTRICT,
+    CONSTRAINT fk_municipio FOREIGN KEY (municipio_id)
+        REFERENCES municipios (id) ON DELETE RESTRICT 
+);
+```
+
+* procedimientos almacenados
+    ```sql
+    -- Obtener todos los usuarios
+    CREATE OR REPLACE FUNCTION obtener_todos_los_usuarios()
+    RETURNS TABLE (
+        id INTEGER,
+        nombre_usuario VARCHAR,
+        telefono_usuario VARCHAR,
+        direccion_detalle VARCHAR,
+        pais_id INT,
+        departamento_id CHAR(2),
+        municipio_id INT,
+        status_usuario BOOLEAN,
+        created_at TIMESTAMP,
+        updated_at TIMESTAMP
+    ) AS $$
+    BEGIN
+        RETURN QUERY
+        SELECT 
+            usuarios.id,
+            usuarios.nombre_usuario,
+            usuarios.telefono_usuario,
+            usuarios.direccion_detalle,
+            usuarios.pais_id,
+            usuarios.departamento_id,
+            usuarios.municipio_id,
+            usuarios.status_usuario,
+            usuarios.created_at,
+            usuarios.updated_at
+        FROM usuarios;
+    END;
+    $$ LANGUAGE plpgsql;
+    ```
+
+    ```sql
+    -- Obtener usuario por id
+    CREATE OR REPLACE FUNCTION obtener_usuario_por_id(
+        p_id INTEGER
+    )
+    RETURNS TABLE (
+        id INTEGER,
+        nombre_usuario VARCHAR,
+        telefono_usuario VARCHAR,
+        direccion_detalle VARCHAR,
+        pais_id INT,
+        departamento_id CHAR(2),
+        municipio_id INT,
+        status_usuario BOOLEAN,
+        created_at TIMESTAMP,
+        updated_at TIMESTAMP
+    ) AS $$
+    BEGIN
+        RETURN QUERY SELECT 
+            usuarios.id,
+            usuarios.nombre_usuario,
+            usuarios.telefono_usuario,
+            usuarios.direccion_detalle,
+            usuarios.pais_id,
+            usuarios.departamento_id,
+            usuarios.municipio_id,
+            usuarios.status_usuario,
+            usuarios.created_at,
+            usuarios.updated_at
+        FROM usuarios
+        WHERE usuarios.id = p_id;
+    END;
+    $$ LANGUAGE plpgsql;
+    ```
+
+    ```sql
+    -- Crear Usuario
+    CREATE OR REPLACE FUNCTION crear_usuario(
+        p_nombre_usuario VARCHAR,
+        p_telefono_usuario VARCHAR,
+        p_direccion_detalle VARCHAR,
+        p_pais_id INT,
+        p_departamento_id CHAR(2),
+        p_municipio_id INT,
+        p_status_usuario BOOLEAN
+    )
+    RETURNS TABLE (
+        id INTEGER,
+        nombre_usuario VARCHAR,
+        telefono_usuario VARCHAR,
+        direccion_detalle VARCHAR,
+        pais_id INT,
+        departamento_id CHAR(2),
+        municipio_id INT,
+        status_usuario BOOLEAN,
+        created_at TIMESTAMP,
+        updated_at TIMESTAMP
+    ) AS $$
+    BEGIN
+        -- Verificar si el país, departamento y municipio existen
+        IF NOT EXISTS (SELECT 1 FROM paises WHERE paises.id = p_pais_id) THEN
+            RAISE EXCEPTION 'No se encontró el país con el ID %', p_pais_id;
+        END IF;
+
+        IF NOT EXISTS (SELECT 1 FROM departamentos WHERE departamentos.codigo_departamento = p_departamento_id) THEN
+            RAISE EXCEPTION 'No se encontró el departamento con el código %', p_departamento_id;
+        END IF;
+
+        IF NOT EXISTS (SELECT 1 FROM municipios WHERE municipios.id = p_municipio_id) THEN
+            RAISE EXCEPTION 'No se encontró el municipio con el ID %', p_municipio_id;
+        END IF;
+    ```
+
+    ```sql
+    -- Actualizar usuario
+    CREATE OR REPLACE FUNCTION actualizar_usuario(
+        p_id INTEGER,
+        p_nombre_usuario VARCHAR,
+        p_telefono_usuario VARCHAR,
+        p_direccion_detalle VARCHAR,
+        p_pais_id INT,
+        p_departamento_id CHAR(2),
+        p_municipio_id INT,
+        p_status_usuario BOOLEAN
+    )
+    RETURNS VOID AS $$
+    BEGIN
+        -- Actualizar los datos del usuario
+        UPDATE usuarios
+        SET
+            nombre_usuario = p_nombre_usuario,
+            telefono_usuario = p_telefono_usuario,
+            direccion_detalle = p_direccion_detalle,
+            pais_id = p_pais_id,
+            departamento_id = p_departamento_id,
+            municipio_id = p_municipio_id,
+            status_usuario = p_status_usuario,
+            updated_at = CURRENT_TIMESTAMP
+        WHERE id = p_id;
+
+        -- Si no se encuentra el usuario, lanzar una excepción
+        IF NOT FOUND THEN
+            RAISE EXCEPTION 'No se encontró el usuario con el ID %', p_id;
+        END IF;
+    END;
+    $$ LANGUAGE plpgsql;
+    ```
+
+    ```sql
+    -- Eliminar usuario
+        CREATE OR REPLACE FUNCTION eliminar_usuario(
+        p_id INTEGER
+    )
+    RETURNS VOID AS $$
+    BEGIN
+        -- Desactivar al usuario
+        UPDATE usuarios
+        SET
+            status_usuario = FALSE,
+            updated_at = CURRENT_TIMESTAMP
+        WHERE id = p_id;
+
+        -- Si no se encuentra el usuario, lanzar una excepción
+        IF NOT FOUND THEN
+            RAISE EXCEPTION 'No se encontró el usuario con el ID %', p_id;
+        END IF;
+    END;
+    $$ LANGUAGE plpgsql;
+    ```

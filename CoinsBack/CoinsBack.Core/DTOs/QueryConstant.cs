@@ -37,6 +37,21 @@ public static class QueryConstant
     FROM
         obtener_todos_municipios();";
 
+    public static readonly string CONSULTAR_USUARIOS = @"
+    SELECT 
+	    id ,
+        nombre_usuario ,
+        telefono_usuario ,
+        direccion_detalle ,
+        pais_id ,
+        departamento_id ,
+        municipio_id ,
+        status_usuario ,
+        created_at ,
+        updated_at 
+    FROM 
+	    obtener_todos_los_usuarios();";
+
     public static readonly string CONSULTAR_PAIS_POR_ID = @"
     SELECT 
         id, 
@@ -71,6 +86,21 @@ public static class QueryConstant
         updated_at 
     FROM 
         obtener_municipio_por_id(@IdMunicipio);";
+
+    public static readonly string CONSULTAR_USUARIO_POR_ID = @"
+    SELECT 
+	    id ,
+        nombre_usuario ,
+        telefono_usuario ,
+        direccion_detalle ,
+        pais_id ,
+        departamento_id ,
+        municipio_id ,
+        status_usuario ,
+        created_at ,
+        updated_at 
+    FROM 
+	    obtener_usuario_por_id(@IdUsuario);";
 
     public static readonly string CREAR_PAIS = @"
     SELECT 
@@ -107,6 +137,28 @@ public static class QueryConstant
     FROM
         crear_municipio(@CodigoMunicipio, @NombreMunicipio, TRUE, @CodigoDepartamento);";
 
+    public static readonly string CREAR_USUARIO = @"
+    SELECT 
+	    id ,
+        nombre_usuario ,
+        telefono_usuario ,
+        direccion_detalle ,
+        pais_id ,
+        departamento_id ,
+        municipio_id ,
+        status_usuario ,
+        created_at ,
+        updated_at
+    FROM 
+	    crear_usuario(
+        @NombreUsuario, 
+        @TelefonoUsuario, 
+        @DireccionDetalle, 
+        @PaisId, 
+        @DepartamentoId, 
+        @MunicipioId, 
+        TRUE);";
+
     public static readonly string ACTUALIZAR_PAIS = @"
     SELECT actualizar_pais(@IdPais, @CodigoPais, @NombrePais, TRUE);";
 
@@ -116,6 +168,9 @@ public static class QueryConstant
     public static readonly string ACTUALIZAR_MUNICIPIO = @"
     SELECT actualizar_municipio(@IdMunicipio, @CodigoMunicipio, @NombreMunicipio, TRUE, @CodigoDepartamento);";
 
+    public static readonly string ACTUALIZAR_USUARIO = @"
+    SELECT actualizar_usuario(@IdUsuario, @NombreUsuario, @TelefonoUsuario, @DireccionUsuario, @IdPaisUsuario, @IdDepartamentoUsuario, @IdMunicipioUsuario, TRUE);";
+
     public static readonly string ELIMINAR_PAIS = @"
     SELECT eliminar_pais(@IdPais);";
 
@@ -124,4 +179,7 @@ public static class QueryConstant
 
     public static readonly string ELIMINAR_MUNICIPIO = @"
     SELECT eliminar_municipio(@IdMunicipio);";
+
+    public static readonly string ELIMINAR_USUARIO = @"
+    SELECT eliminar_usuario(@IdUsuario);";
 }

@@ -13,15 +13,70 @@ public class UserService : IUserService
         _userRepository = userRepository;
     }
 
-    public async Task<IEnumerable<UserDto>> GetAllUsersAsync()
+    // Obtener todos los usuarios
+    public async Task<IEnumerable<UserDto>> GetAllUserAsync()
     {
-        var users = await _userRepository.GetAllAsync();
-        return users.Select(
-            u => new UserDto { 
-                Id = u.Id, 
-                NombreCliente = u.Nombre, 
-                TelefonoCliente = u.Telefono,
-                DireccionCliente = u.Direccion,
-            });
+        var usuarios = await _userRepository.GetAllAsync();
+        return usuarios.Select(u => new UserDto
+        {
+            Id = u.Id,
+            NombreCliente = u.NombreUsuario,
+            TelefonoCliente = u.TelefonoUsuario,
+            DireccionCliente = u.DireccionDetalle
+        });
+    }
+
+    // obtener un usuario por su id
+    public async Task<UserEntity> getUserbyidasync(int id)
+    {
+        var usuario = await _userRepository.GetByIdAsync(id);
+        if (usuario == null)
+            return null;
+
+        return usuario;
+    }
+
+    // crear un nuevo usuario
+    public async Task<UserEntity> createUserasync(
+        string nombreUsuario,
+        string telefonoUsuario,
+        string direccionDetalle,
+        int paisId,
+        string departamentoId,
+        int municipioId)
+    {
+        return await _userRepository.CrearUsuarioAsync(
+            nombreUsuario,
+            telefonoUsuario,
+            direccionDetalle,
+            paisId,
+            departamentoId,
+            municipioId);
+    }
+
+    // actualizar un usuario existente
+    public async Task<bool> updateUsuarioasync(
+        int idUsuario,
+        string nombreUsuario,
+        string telefonoUsuario,
+        string direccionUsuario,
+        int idPaisUsuario,
+        string idDepartamentoUsuario,
+        int idMunicipioUsuario)
+    {
+        return await _userRepository.ActualizarUsuarioAsync(
+            idUsuario,
+            nombreUsuario,
+            telefonoUsuario,
+            direccionUsuario,
+            idPaisUsuario,
+            idDepartamentoUsuario,
+            idMunicipioUsuario);
+    }
+
+    // eliminar un usuario
+    public async Task<bool> deleteUsuarioasync(int id)
+    {
+        return await _userRepository.EliminarUsuarioAsync(id);
     }
 }
