@@ -10,14 +10,19 @@ namespace CoinsBack.Api.Controllers
     [ApiController]
     public class ParametricasController : Controller
     {
-
         private readonly IPaisService _paisService;
+        private readonly IDepartamentoService _departamentoService;
 
-        public ParametricasController(IPaisService paisService)
+        public ParametricasController(
+            IPaisService paisService, 
+            IDepartamentoService departamentoService)
         {
             _paisService = paisService;
+            _departamentoService = departamentoService;
         }
 
+        // Controlador paises
+        #region
         // Obtener todos los países
         [HttpGet("paises")]
         public async Task<ActionResult<IEnumerable<PaisDTO>>> GetAll()
@@ -94,69 +99,89 @@ namespace CoinsBack.Api.Controllers
 
             return BadRequest("No se pudo eliminar el país.");
         }
+        #endregion
 
-
-
-
-        //departamento
+        // Controlador departamento
+        #region
         // Obtener todas las entidades
         [HttpGet("departamentos")]
-        public async Task<ActionResult<IEnumerable<PaisDTO>>> GetAllDepartamento()
+        public async Task<ActionResult<IEnumerable<DepartamentoDTO>>> GetAllDepartamento()
         {
-            var entidades = await _paisService.GetAllCountryAsync();
-            return Ok(entidades);
+            var departamentos = await _departamentoService.GetAllDepartmentAsync();
+            return Ok(departamentos);
         }
 
         // Obtener una entidad por ID
         [HttpGet("departamento/{id}")]
         public async Task<ActionResult<PaisDTO>> GetByIdDepartamento(int id)
         {
-            //var entidad = await _repository.GetByIdAsync(id);
-            //if (entidad == null)
-            //    return NotFound($"No se encontró la entidad con ID: {id}");
+            var departamento = await _departamentoService.GetDepartmentByIdAsync(id);
+            if (departamento == null)
+                return NotFound($"No se encontró el departamento con ID: {id}");
 
-            return Ok();
+            return Ok(departamento);
         }
 
         // Crear una nueva entidad
         [HttpPost("departamento")]
-        public async Task<ActionResult> CreateDepartamento([FromBody] PaisDTO nuevaEntidad)
+        public async Task<ActionResult> CreateDepartamento([FromBody] CreateDepartamentoDTO nuevaEntidad)
         {
-            //if (!ModelState.IsValid)
-            //    return BadRequest(ModelState);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-            //await _repository.CreateAsync(nuevaEntidad);
-            return CreatedAtAction(nameof(GetById), new { id = nuevaEntidad.Id }, nuevaEntidad);
+            var creado = await _departamentoService.CreateDepartmentAsync(nuevaEntidad.CodigoDepartamento, nuevaEntidad.NombreDepartamento, nuevaEntidad.CodigoPais);
+            if (creado != null)
+            {
+                return CreatedAtAction(
+                    nameof(GetById),
+                    new { id = creado.IdDepartamento },
+                    creado
+                );
+            }
+
+            return BadRequest("No se pudo crear el departamento.");
         }
 
         // Actualizar una entidad existente
         [HttpPut("departamento/{id}")]
-        public async Task<ActionResult> UpdateDepartamentos(int id, [FromBody] PaisDTO entidadActualizada)
+        public async Task<ActionResult> UpdateDepartamento(int id, [FromBody] CreateDepartamentoDTO entidadActualizada)
         {
-            //if (id != entidadActualizada.Id)
-            //    return BadRequest("El ID de la entidad no coincide.");
+            if (id != entidadActualizada.Id)
+                return BadRequest("El ID de la entidad no coincide.");
 
-            //var existente = await _repository.GetByIdAsync(id);
-            //if (existente == null)
-            //    return NotFound($"No se encontró la entidad con ID: {id}");
+            var departamentoExistente = await _departamentoService.GetDepartmentByIdAsync(id);
+            if (departamentoExistente == null)
+                return NotFound($"No se encontró el departamento con ID: {id}");
 
-            //await _repository.UpdateAsync(entidadActualizada);
-            return NoContent();
+            var actualizado = await _departamentoService.UpdateDepartmentAsync(id, entidadActualizada.CodigoDepartamento, entidadActualizada.NombreDepartamento, entidadActualizada.CodigoPais);
+            if (actualizado)
+            {
+                return NoContent(); // 204 No Content, indicando que la actualización fue exitosa
+            }
+
+            return BadRequest("No se pudo actualizar el departamento.");
         }
 
         // Eliminar una entidad
         [HttpDelete("departamento/{id}")]
         public async Task<ActionResult> DeleteDepartamento(int id)
         {
-            //var existente = await _repository.GetByIdAsync(id);
-            //if (existente == null)
-            //    return NotFound($"No se encontró la entidad con ID: {id}");
+            var departamentoExistente = await _departamentoService.GetDepartmentByIdAsync(id);
+            if (departamentoExistente == null)
+                return NotFound($"No se encontró el país con ID: {id}");
 
-            //await _repository.DeleteAsync(id);
-            return NoContent();
+            var eliminado = await _departamentoService.DeleteDepartmentAsync(id);
+            if (eliminado)
+            {
+                return NoContent(); 
+            }
+
+            return BadRequest("No se pudo eliminar el país.");
         }
+        #endregion
 
-        //municipios
+        // Controlador municipio
+        #region
         // Obtener todas las entidades
         [HttpGet("municipios")]
         public async Task<ActionResult<IEnumerable<PaisDTO>>> GetAllMunicipios()
@@ -213,5 +238,6 @@ namespace CoinsBack.Api.Controllers
             //await _repository.DeleteAsync(id);
             return NoContent();
         }
+        #endregion
     }
 }

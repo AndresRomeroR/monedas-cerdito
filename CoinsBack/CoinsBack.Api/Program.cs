@@ -20,7 +20,9 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IPaisService, PaisService>();
+builder.Services.AddScoped<IDepartamentoService, DepartamentoService>();
 builder.Services.AddScoped<IPaisRepository, PaisRepository>();
+builder.Services.AddScoped<IDepartamentoRepository, DepartamentoRepository>();
 
 var app = builder.Build();
 
