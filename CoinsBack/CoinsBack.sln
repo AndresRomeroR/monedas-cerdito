@@ -3,7 +3,31 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.12.35506.116 d17.12
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoinsBack.Api", "CoinsBack.Api\CoinsBack.Api.csproj", "{C458ECFC-B0A0-47CD-83A4-817CDF535936}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoinsBack.Core", "CoinsBack.Core\CoinsBack.Core.csproj", "{F7062C9F-D998-4621-85D4-A168A67E2C9C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoinsBack.Infrastructure", "CoinsBack.Infrastructure\CoinsBack.Infrastructure.csproj", "{5631509B-D8EF-4330-B772-0194A214C9EB}"
+EndProject
 Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C458ECFC-B0A0-47CD-83A4-817CDF535936}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C458ECFC-B0A0-47CD-83A4-817CDF535936}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C458ECFC-B0A0-47CD-83A4-817CDF535936}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C458ECFC-B0A0-47CD-83A4-817CDF535936}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F7062C9F-D998-4621-85D4-A168A67E2C9C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F7062C9F-D998-4621-85D4-A168A67E2C9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F7062C9F-D998-4621-85D4-A168A67E2C9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F7062C9F-D998-4621-85D4-A168A67E2C9C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5631509B-D8EF-4330-B772-0194A214C9EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5631509B-D8EF-4330-B772-0194A214C9EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5631509B-D8EF-4330-B772-0194A214C9EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5631509B-D8EF-4330-B772-0194A214C9EB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection

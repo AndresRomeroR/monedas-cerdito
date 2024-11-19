@@ -11,7 +11,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
+    <Folder Include="Responses\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CoinsBack.Core\CoinsBack.Core.csproj" />
+    <ProjectReference Include="..\CoinsBack.Infrastructure\CoinsBack.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

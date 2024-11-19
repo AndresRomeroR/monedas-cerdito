@@ -1,11 +1,26 @@
+using CoinsBack.Core.Interfaces;
+using CoinsBack.Core.Services;
+using CoinsBack.Infrastructure.Data;
+using CoinsBack.Infrastructure.Repositories;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+builder.Services.AddScoped<DatabaseContext>(provider =>
+{
+    var connectionString = builder.Configuration.GetConnectionString("Postgres");
+    return new DatabaseContext(connectionString);
+});
 
+// Add services to the container.
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Register application services
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IPaisService, PaisService>();
+builder.Services.AddScoped<IPaisRepository, PaisRepository>();
 
 var app = builder.Build();
 
