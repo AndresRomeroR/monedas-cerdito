@@ -12,13 +12,16 @@ namespace CoinsBack.Api.Controllers
     {
         private readonly IPaisService _paisService;
         private readonly IDepartamentoService _departamentoService;
+        private readonly IMunicipioService _municipioService;
 
         public ParametricasController(
             IPaisService paisService, 
-            IDepartamentoService departamentoService)
+            IDepartamentoService departamentoService,
+            IMunicipioService municipioService)
         {
             _paisService = paisService;
             _departamentoService = departamentoService;
+            _municipioService = municipioService;
         }
 
         // Controlador paises
@@ -184,59 +187,78 @@ namespace CoinsBack.Api.Controllers
         #region
         // Obtener todas las entidades
         [HttpGet("municipios")]
-        public async Task<ActionResult<IEnumerable<PaisDTO>>> GetAllMunicipios()
+        public async Task<ActionResult<IEnumerable<MunicipioDTO>>> GetAllMunicipios()
         {
-            var entidades = await _paisService.GetAllCountryAsync();
-            return Ok(entidades);
+            var municipios = await _municipioService.GetAllMunicipalityAsync();
+            return Ok(municipios);
         }
 
         // Obtener una entidad por ID
         [HttpGet("municipio/{id}")]
-        public async Task<ActionResult<PaisDTO>> GetByIdMunicipios(int id)
+        public async Task<ActionResult<MunicipioDTO>> GetByIdMunicipio(int id)
         {
-            //var entidad = await _repository.GetByIdAsync(id);
-            //if (entidad == null)
-            //    return NotFound($"No se encontró la entidad con ID: {id}");
+            var municipio = await _municipioService.GetMunicipalityByIdAsync(id);
+            if (municipio == null)
+                return NotFound($"No se encontró el municipio con ID: {id}");
 
-            return Ok();
+            return Ok(municipio);
         }
 
         // Crear una nueva entidad
         [HttpPost("municipio")]
-        public async Task<ActionResult> CreateMunicipios([FromBody] PaisDTO nuevaEntidad)
+        public async Task<ActionResult> CreateMunicipio([FromBody] CreateMunicipioDTO nuevaEntidad)
         {
-            //if (!ModelState.IsValid)
-            //    return BadRequest(ModelState);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-            //await _repository.CreateAsync(nuevaEntidad);
-            return CreatedAtAction(nameof(GetById), new { id = nuevaEntidad.Id }, nuevaEntidad);
+            var creado = await _municipioService.CreateMunicipalityAsync(nuevaEntidad.CodigoMunicipio, nuevaEntidad.NombreMunicipio, nuevaEntidad.CodigoDepartamento);
+            if (creado != null)
+            {
+                return CreatedAtAction(
+                    nameof(GetById),
+                    new { id = creado.Id },
+                    creado
+                );
+            }
+
+            return BadRequest("No se pudo crear el municipio.");
         }
 
         // Actualizar una entidad existente
         [HttpPut("municipio/{id}")]
-        public async Task<ActionResult> UpdateMunicipios(int id, [FromBody] PaisDTO entidadActualizada)
+        public async Task<ActionResult> UpdateMunicipio(int id, [FromBody] CreateMunicipioDTO entidadActualizada)
         {
-            //if (id != entidadActualizada.Id)
-            //    return BadRequest("El ID de la entidad no coincide.");
+            if (id != entidadActualizada.Id)
+                return BadRequest("El ID de la entidad no coincide.");
 
-            //var existente = await _repository.GetByIdAsync(id);
-            //if (existente == null)
-            //    return NotFound($"No se encontró la entidad con ID: {id}");
+            var municipioExistente = await _municipioService.GetMunicipalityByIdAsync(id);
+            if (municipioExistente == null)
+                return NotFound($"No se encontró el municipio con ID: {id}");
 
-            //await _repository.UpdateAsync(entidadActualizada);
-            return NoContent();
+            var actualizado = await _municipioService.UpdateMunicipalityAsync(entidadActualizada.Id, entidadActualizada.CodigoMunicipio, entidadActualizada.NombreMunicipio, entidadActualizada.CodigoDepartamento);
+            if (actualizado)
+            {
+                return NoContent(); // 204 No Content, indicando que la actualización fue exitosa
+            }
+
+            return BadRequest("No se pudo actualizar el departamento.");
         }
 
         // Eliminar una entidad
         [HttpDelete("municipio/{id}")]
         public async Task<ActionResult> DeleteMunicipio(int id)
         {
-            //var existente = await _repository.GetByIdAsync(id);
-            //if (existente == null)
-            //    return NotFound($"No se encontró la entidad con ID: {id}");
+            var municipioExistente = await _municipioService.GetMunicipalityByIdAsync(id);
+            if (municipioExistente == null)
+                return NotFound($"No se encontró el municipio con ID: {id}");
 
-            //await _repository.DeleteAsync(id);
-            return NoContent();
+            var eliminado = await _municipioService.DeleteMunicipalityAsync(id);
+            if (eliminado)
+            {
+                return NoContent();
+            }
+
+            return BadRequest("No se pudo eliminar el municipio.");
         }
         #endregion
     }

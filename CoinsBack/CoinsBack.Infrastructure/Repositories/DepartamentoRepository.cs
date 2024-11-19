@@ -61,7 +61,7 @@ public class DepartamentoRepository : IDepartamentoRepository
             using var connection = _context.GetConnection();
             var departamento = await connection.QuerySingleOrDefaultAsync(
                 QueryConstant.CONSULTAR_DEPARTAMENTO_POR_ID,
-                new { @IdDepartamento = id },
+                new { IdDepartamento = id },
                 commandType: CommandType.Text
             );
 

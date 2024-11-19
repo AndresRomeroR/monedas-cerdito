@@ -21,8 +21,10 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IPaisService, PaisService>();
 builder.Services.AddScoped<IDepartamentoService, DepartamentoService>();
+builder.Services.AddScoped<IMunicipioService, MunicipioService>();
 builder.Services.AddScoped<IPaisRepository, PaisRepository>();
 builder.Services.AddScoped<IDepartamentoRepository, DepartamentoRepository>();
+builder.Services.AddScoped<IMunicipioRepository, MunicipioRepository>();
 
 var app = builder.Build();
 
