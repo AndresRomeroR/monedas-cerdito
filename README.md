@@ -9,6 +9,12 @@ docker run -e POSTGRES_USER=arrr -e POSTGRES_PASSWORD=password -e POSTGRESQL_DB=
 ```
 Además, en la raíz del proyecto encontrarás un archivo con extensión .sql que contiene un respaldo de los datos, incluyendo ejemplos para las distintas tablas del esquema. Este archivo puede ser utilizado para cargar datos iniciales en la base de datos y facilitar pruebas o configuraciones.
 
+Contenedor de la DB
+
+```bash
+docker push watermat/postgresql_image:tagname
+```
+
 # Esquema de la Base de Datos
 
 El siguiente diagrama representa el esquema de la base de datos utilizado en este proyecto:
