@@ -1,6 +1,19 @@
 # monedas-cerdito
 Prueba técnica Coink
 
+Este proyecto fue desarrollado utilizando .NET 8 y PostgreSQL 17 como tecnologías principales. La ejecución del entorno de base de datos se realiza mediante un contenedor Docker, el cual puedes configurar utilizando los siguientes comandos:
+
+```bash
+docker pull postgres
+docker run -e POSTGRES_USER=arrr -e POSTGRES_PASSWORD=password -e POSTGRESQL_DB=coinsdb -p 5432:5432 -d postgres
+```
+Además, en la raíz del proyecto encontrarás un archivo con extensión .sql que contiene un respaldo de los datos, incluyendo ejemplos para las distintas tablas del esquema. Este archivo puede ser utilizado para cargar datos iniciales en la base de datos y facilitar pruebas o configuraciones.
+
+# Esquema de la Base de Datos
+
+El siguiente diagrama representa el esquema de la base de datos utilizado en este proyecto:
+
+![Esquema de la Base de Datos](esquema.png)
 
 Tablas parametrizadas
 
